@@ -28,7 +28,7 @@
 \newcommand{\rr}[1]{\mbox{\rm #1}}
 %\usepackage[utf8]{inputenc}
 
-\newcommand{\mitbf}[1]{
+\newcommand{\mathbf}[1]{
   \hbox{\mathversion{bold}$#1$}}
   \newcommand{\rmn}[1] {{\mathrm #1}}
   \newcommand{\itl}[1] {{\mathit #1}}
@@ -233,25 +233,26 @@ To evaluate the interpretation achievable by combining our smooth inversions, we
 \label{fig:Figure6.png}
 \end{figure}
 
-To include physical property information into the inversion, we model the petrophysical signature of each rock unit by a Gaussian probability distribution. Each unit (indexed $j$, for a total of $c$ units) is defined by the mean of its physical properties ($\mitbf{\mu}_j$) and a covariance matrix linking the various physical properties ($\Sigma_j$). Computations of those values based on samples are shown in equations \ref{MLE-means} to \ref{MLE-cov}. Measured physical properties for a sample $s$ belonging to rock unit $j$ is represented by $\mathbf{x}_{s \in j}$. The number of available samples for rock unit $j$ is denoted $s_j$.
+To include physical property information into the inversion, we model the petrophysical signature of each rock unit by a Gaussian probability distribution. Each unit (indexed $j$, for a total of $c$ units) is defined by the mean of its physical properties ($\mathbf{\mu}_j$) and a covariance matrix linking the various physical properties ($\Sigma_j$). Computations of those values based on samples are shown in equations \ref{MLE-means} to \ref{MLE-cov}. Measured physical properties for a sample $s$ belonging to rock unit $j$ is represented by $\mathbf{x}_{s \in j}$. The number of available samples for rock unit $j$ is denoted $s_j$.
 
-%Let's consider a given petrophysical dataset with $n$ samples, denoted $\{\mathbf{x}_i,i=1..n\}$. Each $\mathbf{x}_i$ represents the various measured physical properties for the sample $i$. For each sample we know its current geological classification. This is denoted by $j=1..c$ where $c$ the number of distinct geological units. A sample $i$ belonging to unit $j$ is noted $\mathbf{x}_{i\in j}$. With known labels, the Gaussian distribution parameters for each unit $j=\{1..c\}$ are given in equations \ref{MLE-weights} to \ref{MLE-cov} (respectively its mean $\mitbf{\mu}_j$, its covariance matrix $\Sigma_j$, plus its relative proportion $\pi_j$).
+%Let's consider a given petrophysical dataset with $n$ samples, denoted $\{\mathbf{x}_i,i=1..n\}$. Each $\mathbf{x}_i$ represents the various measured physical properties for the sample $i$. For each sample we know its current geological classification. This is denoted by $j=1..c$ where $c$ the number of distinct geological units. A sample $i$ belonging to unit $j$ is noted $\mathbf{x}_{i\in j}$. With known labels, the Gaussian distribution parameters for each unit $j=\{1..c\}$ are given in equations \ref{MLE-weights} to \ref{MLE-cov} (respectively its mean $\ma
+tbf{\mu}_j$, its covariance matrix $\Sigma_j$, plus its relative proportion $\pi_j$).
 
 
 \begin{align}
-\mitbf{\mu}_j &= \frac{1}{s_j}\sum_{s=1}^{s_j}\mathbf{x}_{s \in j}.
+\mathbf{\mu}_j &= \frac{1}{s_j}\sum_{s=1}^{s_j}\mathbf{x}_{s \in j}.
 \label{MLE-means}
 \end{align}
 
 \begin{align}
-\Sigma_j & = \frac{1}{s_j}\sum_{s=1}^{s_j}(\mathbf{x}_{s \in j}-\mitbf{\mu}_j)(\mathbf{x}_{s \in j}-\mitbf{\mu}_j)^T.
+\Sigma_j & = \frac{1}{s_j}\sum_{s=1}^{s_j}(\mathbf{x}_{s \in j}-\mathbf{\mu}_j)(\mathbf{x}_{s \in j}-\mathbf{\mu}_j)^T.
 \label{MLE-cov}
 \end{align}
 
-The Gaussian distribution representing each unit $j$ is denoted $\mathcal{N}(\cdot | \mitbf{\mu}_j, \Sigma_j)$. We regroup the petrophysical and geological information of all the known units in the form of a Gaussian mixture model (GMM) (equation \ref{GMM}), which is a sum of the Gaussian signatures weighted by the prior probability of encountering the rock unit $j$ at the location $i$ (denoted $\pi_{i,j}$). This last parameter does not have to be precise and has minimal effects when set constant everywhere. Allowing those probabilities to vary depending of the location provides an additional way to include geological information \citep{Giraud2017} and we use this functionality later in this paper. Thus the probability function to observe a physical properties data point $\mathbf{x}$ at location $i$ can be written:
+The Gaussian distribution representing each unit $j$ is denoted $\mathcal{N}(\cdot | \mathbf{\mu}_j, \Sigma_j)$. We regroup the petrophysical and geological information of all the known units in the form of a Gaussian mixture model (GMM) (equation \ref{GMM}), which is a sum of the Gaussian signatures weighted by the prior probability of encountering the rock unit $j$ at the location $i$ (denoted $\pi_{i,j}$). This last parameter does not have to be precise and has minimal effects when set constant everywhere. Allowing those probabilities to vary depending of the location provides an additional way to include geological information \citep{Giraud2017} and we use this functionality later in this paper. Thus the probability function to observe a physical properties data point $\mathbf{x}$ at location $i$ can be written:
 
 \begin{align}
-&\mathcal{P}(\mathbf{x}_i) = \sum_{j=1}^c \pi_{i,j} \mathcal{N}(\mathbf{x}_i|\mitbf{\mu}_j,\Sigma_j). \label{GMM}
+&\mathcal{P}(\mathbf{x}_i) = \sum_{j=1}^c \pi_{i,j} \mathcal{N}(\mathbf{x}_i|\mathbf{\mu}_j,\Sigma_j). \label{GMM}
 \end{align}
 
 A fictitious example of a GMM with two physical properties (the axes) and two rock units (the Gaussian distributions) is shown in Figure \ref{fig:Figure6.png}. Each Gaussian represents the petrophysical signature of a rock unit for the two physical properties. The background color highlights the most likely rock unit for any given values of the physical properties; we refer to this classification as the geological identification.
@@ -263,7 +264,7 @@ A fictitious example of a GMM with two physical properties (the axes) and two ro
 %&z_0 = \mathop{\hbox{argmax}}\limits_{z \in \left\{1..j\right\}}\mathcal{P}(\mathbf{x}_0|z)\mathcal{P}(z) \label{MAP_z_physProp}\\
 %&\text{with:} \nonumber \\
 %&\mathcal{P}(z) = \pi_z \text{ and}\label{weight_z_prior} \\
-%&\mathcal{P}(\mathbf{x}_0|z)=\mathcal{N}(\mathbf{x}_0| \mitbf{\mu}_{z},\Sigma_{z}).
+%&\mathcal{P}(\mathbf{x}_0|z)=\mathcal{N}(\mathbf{x}_0| \mathbf{\mu}_{z},\Sigma_{z}).
 %\end{align}
 
 \subsection{Key concepts for Petrophysically and Geologically guided Inversions (PGI)}
@@ -273,8 +274,8 @@ As put forward in \citet{ggz389}, we can build upon the objective function in eq
 \begin{align}
 &\Phi_{small}(\mathbf{m}) = \frac{1}{2}\sum_{i=1}^n||W_{s}(z_i)(\mathbf{m}_i-\mathbf{m}_{ref}(z_i))||_2^2, \label{smallness_petro}\\
 &\text{with:}\nonumber\\
-&z_i = \mathop{\hbox{argmax}}\limits_{j} \pi_{i,j}~\mathcal{N}(\mathbf{m}_i|\mitbf{\mu}_j, \Sigma_j), \label{membership} \\
-&\mathbf{m}_{\text{ref}}(z_i) = \mitbf{\mu}_{z_i}, \label{mref_update}\\
+&z_i = \mathop{\hbox{argmax}}\limits_{j} \pi_{i,j}~\mathcal{N}(\mathbf{m}_i|\mathbf{\mu}_j, \Sigma_j), \label{membership} \\
+&\mathbf{m}_{\text{ref}}(z_i) = \mathbf{\mu}_{z_i}, \label{mref_update}\\
 &W_{s}(z_i) = \Sigma_{z_i}^{-1/2}\text{diag}(\mathbf{w}_{{i}}), \label{Ws_update}
 \end{align}
 where $z_i$ denotes the geological identification, and $\mathbf{w_i}$ are sensitivity weights for each physical property at cell $i$, for a total number of $n$ cells.
@@ -558,7 +559,7 @@ The authors thank K. Witherly and J. Jansen for the inspiring discussions about 
 
 %\append{Gaussian parameters and Gaussian mixture model formulas}
 
-%Let's consider a given petrophysical dataset with $n$ samples, denoted $\{\mathbf{x}_i,i=1..n\}$. Each $\mathbf{x}_i$ represents the various measured physical properties for the sample $i$. For each sample we know its current geological classification. This is denoted by $j=1..c$ where $c$ the number of distinct geological units. A sample $i$ belonging to unit $j$ is noted $\mathbf{x}_{i\in j}$. With known labels, the Gaussian distribution parameters for each unit $j=\{1..c\}$ are given in equations \ref{MLE-weights} to \ref{MLE-cov} (respectively its mean $\mitbf{\mu}_j$, its covariance matrix $\Sigma_j$, plus its relative proportion $\pi_j$).
+%Let's consider a given petrophysical dataset with $n$ samples, denoted $\{\mathbf{x}_i,i=1..n\}$. Each $\mathbf{x}_i$ represents the various measured physical properties for the sample $i$. For each sample we know its current geological classification. This is denoted by $j=1..c$ where $c$ the number of distinct geological units. A sample $i$ belonging to unit $j$ is noted $\mathbf{x}_{i\in j}$. With known labels, the Gaussian distribution parameters for each unit $j=\{1..c\}$ are given in equations \ref{MLE-weights} to \ref{MLE-cov} (respectively its mean $\mathbf{\mu}_j$, its covariance matrix $\Sigma_j$, plus its relative proportion $\pi_j$).
 
 
 %\begin{align}
@@ -567,22 +568,22 @@ The authors thank K. Witherly and J. Jansen for the inspiring discussions about 
 %\end{align}
 
 %\begin{align}
-%\mitbf{\mu}_j &= \frac{1}{n_j}\sum_{i=1}^{n_j}\mathbf{x}_{i \in j}
+%\mathbf{\mu}_j &= \frac{1}{n_j}\sum_{i=1}^{n_j}\mathbf{x}_{i \in j}
 %\label{MLE-means}
 %\end{align}
 
 %\begin{align}
-%\Sigma_j & = \frac{1}{n_j}\sum_{i=1}^{n_j}(\mathbf{x}_{i \in j}-\mitbf{\mu}_j)(\mathbf{x}_{i \in j}-\mitbf{\mu}_j)^T.
+%\Sigma_j & = \frac{1}{n_j}\sum_{i=1}^{n_j}(\mathbf{x}_{i \in j}-\mathbf{\mu}_j)(\mathbf{x}_{i \in j}-\mathbf{\mu}_j)^T.
 %\label{MLE-cov}
 %\end{align}
 
 %Given the petrophysical signature of all known units, the probability function to observe an unlabeled physical property data point $\mathbf{x}_i$ can be written as a Gaussian Mixture Model (GMM) (see also Figure \ref{fig:Figure6.png}):
 
 %\begin{align}
-%&\mathcal{P}(\mathbf{x}_i|\Theta) = \sum_{j=1}^c \pi_j \mathcal{N}(\mathbf{x}_i|\mitbf{\mu}_j,\Sigma_j) \label{GMM}
+%&\mathcal{P}(\mathbf{x}_i|\Theta) = \sum_{j=1}^c \pi_j \mathcal{N}(\mathbf{x}_i|\mathbf{\mu}_j,\Sigma_j) \label{GMM}
 %\end{align}
 
-%The symbol $\mathcal{N}$ represents the Gaussian distribution function. The variable $\Theta$ holds the GMM parameters $\Theta= \left\{\pi_j, \mitbf{\mu}_j, \Sigma_j\right\}_{j=1..c}$.
+%The symbol $\mathcal{N}$ represents the Gaussian distribution function. The variable $\Theta$ holds the GMM parameters $\Theta= \left\{\pi_j, \mathbf{\mu}_j, \Sigma_j\right\}_{j=1..c}$.
 
 %The geological identification is denoted $\mathbf{z}$. Given an unlabeled data point $\mathbf{x}_0$, its geological identification $z_0$ takes the value of the geological unit with the highest probability (see equation \ref{MAP_z_physProp}).
 
@@ -590,7 +591,7 @@ The authors thank K. Witherly and J. Jansen for the inspiring discussions about 
 %&z_0 = \mathop{\hbox{argmax}}\limits_{z \in \left\{1..j\right\}}\mathcal{P}(\mathbf{x}_0|z)\mathcal{P}(z) \label{MAP_z_physProp}\\
 %&\text{with:} \nonumber \\
 %&\mathcal{P}(z) = \pi_z \text{ and}\label{weight_z_prior} \\
-%&\mathcal{P}(\mathbf{x}_0|z)=\mathcal{N}(\mathbf{x}_0| \mitbf{\mu}_{z},\Sigma_{z}).
+%&\mathcal{P}(\mathbf{x}_0|z)=\mathcal{N}(\mathbf{x}_0| \mathbf{\mu}_{z},\Sigma_{z}).
 %\end{align}
 
 %\append{HK density samples}
