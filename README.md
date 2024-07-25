@@ -14,3 +14,16 @@ We have carried out petrophysically and geologically guided inversions (PGIs) to
 
 Thibaut Astic, Dominique Fournier, and Douglas W. Oldenburg, (2020), "Joint inversion of potential-fields data over the DO-27 kimberlite pipe using a Gaussian mixture model prior," Interpretation 8: SS47-SS62.
 https://doi.org/10.1190/INT-2019-0283.1
+
+```
+@article{astic_inversion_2023,
+title = {Joint inversion of potential-fields data over the DO-27 kimberlite pipe using a Gaussian mixture model prior},
+journal = {The SEG Library},
+volume = {8},
+pages = {1N-T1095},
+year = {2020},
+issn = {2324-8866},
+doi = {https://doi.org/10.1190/INT-2019-0283.1},
+url = {https://library.seg.org/doi/abs/10.1190/int-2019-0283.1}
+}
+```
