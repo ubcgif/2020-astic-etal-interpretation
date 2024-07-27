@@ -28,11 +28,11 @@
 \newcommand{\rr}[1]{\mbox{\rm #1}}
 %\usepackage[utf8]{inputenc}
 
-\newcommand{\mathbf}[1]{
-  \hbox{\mathversion{bold}$#1$}}
-  \newcommand{\rmn}[1] {{\mathrm #1}}
-  \newcommand{\itl}[1] {{\mathit #1}}
-  \newcommand{\bld}[1] {{\mathbf #1}}
+% \newcommand{\mathbf}[1]{
+%   \hbox{\mathversion{bold}$#1$}}
+\newcommand{\rmn}[1] {{\mathrm #1}}
+\newcommand{\itl}[1] {{\mathit #1}}
+\newcommand{\bld}[1] {{\mathbf #1}}
 
 
 \begin{document}
@@ -197,7 +197,8 @@ where $\mathbf{m}$ is our geophysical model, which represents physical propertie
 The regularization is divided into two main terms: the smallness, which measures the distance to a reference model, and the smoothness, which regulates the variations of the model in each direction:
 
 \begin{align}
-\Phi_{m}(\mathbf{m})= \alpha_s \underbrace{\Phi_{s}(\mathbf{m})}_{\text{smallness}} + \sum_{i\in{\{x,y,z\}}}\alpha_i\underbrace{\Phi_{i}(\mathbf{m})}_{\text{smoothness}}. \label{regularizer}
+\Phi_{m}(\mathbf{m})= \alpha_s \underbrace{\Phi_{s}(\mathbf{m})}_{\text{smallness}} + \sum_{i\in{\{x,y,z\}}}\alpha_i\underbrace{\Phi_{i}(\mathbf{m})}_{\text{smoothness}}.
+\label{regularizer}
 \end{align}
 
 %\plot{Figure4.png}{width=\columnwidth}{Octree Mesh used for all the inversions. The area of interest is outlined in white. The Octree levels represent each increase in cell size (with level $1$ being the smallest cells). The volume of interest is discretized with $25$ m cubic cells (level $2$). The topography is accommodated with a layer of the smallest cells ($12.5$ m cubic cells, level $1$). The other levels ($3$ and more) serve as padding.}
@@ -236,7 +237,7 @@ To evaluate the interpretation achievable by combining our smooth inversions, we
 To include physical property information into the inversion, we model the petrophysical signature of each rock unit by a Gaussian probability distribution. Each unit (indexed $j$, for a total of $c$ units) is defined by the mean of its physical properties ($\mathbf{\mu}_j$) and a covariance matrix linking the various physical properties ($\Sigma_j$). Computations of those values based on samples are shown in equations \ref{MLE-means} to \ref{MLE-cov}. Measured physical properties for a sample $s$ belonging to rock unit $j$ is represented by $\mathbf{x}_{s \in j}$. The number of available samples for rock unit $j$ is denoted $s_j$.
 
 %Let's consider a given petrophysical dataset with $n$ samples, denoted $\{\mathbf{x}_i,i=1..n\}$. Each $\mathbf{x}_i$ represents the various measured physical properties for the sample $i$. For each sample we know its current geological classification. This is denoted by $j=1..c$ where $c$ the number of distinct geological units. A sample $i$ belonging to unit $j$ is noted $\mathbf{x}_{i\in j}$. With known labels, the Gaussian distribution parameters for each unit $j=\{1..c\}$ are given in equations \ref{MLE-weights} to \ref{MLE-cov} (respectively its mean $\ma
-tbf{\mu}_j$, its covariance matrix $\Sigma_j$, plus its relative proportion $\pi_j$).
+%tbf{\mu}_j$, its covariance matrix $\Sigma_j$, plus its relative proportion $\pi_j$).
 
 
 \begin{align}
@@ -273,9 +274,15 @@ As put forward in \citet{ggz389}, we can build upon the objective function in eq
 
 \begin{align}
 &\Phi_{small}(\mathbf{m}) = \frac{1}{2}\sum_{i=1}^n||W_{s}(z_i)(\mathbf{m}_i-\mathbf{m}_{ref}(z_i))||_2^2, \label{smallness_petro}\\
-&\text{with:}\nonumber\\
+\end{align}
+with:
+\begin{align}
 &z_i = \mathop{\hbox{argmax}}\limits_{j} \pi_{i,j}~\mathcal{N}(\mathbf{m}_i|\mathbf{\mu}_j, \Sigma_j), \label{membership} \\
+\end{align}
+\begin{align}
 &\mathbf{m}_{\text{ref}}(z_i) = \mathbf{\mu}_{z_i}, \label{mref_update}\\
+\end{align}
+\begin{align}
 &W_{s}(z_i) = \Sigma_{z_i}^{-1/2}\text{diag}(\mathbf{w}_{{i}}), \label{Ws_update}
 \end{align}
 where $z_i$ denotes the geological identification, and $\mathbf{w_i}$ are sensitivity weights for each physical property at cell $i$, for a total number of $n$ cells.
@@ -286,7 +293,8 @@ The update can be understood as a classification of each cell of the mesh into i
 
 Qualitative information about the physical properties of the various rock types found at DO-$27$ was used during previous studies relying on Tikhonov inversions \citep{TKCpaper,TKCEM,TKCIP}. For our work, we need more quantitative information from field samples. We obtained $20$ samples of the various kimberlite facies from Peregrine Diamonds Ltd. $11$ samples of PK, $4$ of VK, and $5$ of HK were sent to the Geological Survey of Canada Paleomagnetism and Petrophysics Laboratory, Victoria, BC, for characterizing the physical properties of each unit. In the following material, we discuss those measurements and how we compiled information into a form that allows us to generate a GMM. Means and standard deviations summarizing the petrophysical characteristics of each rock unit are provided in Table \ref{tbl:gmmtable}.
 
-\subsection{Density information} \label{pkvkdensitysection}
+\subsection{Density information}
+\label{pkvkdensitysection}
 
 \begin{figure*}%*
 \centering
@@ -345,11 +353,13 @@ The resultant GMM for magnetic parameters can be visualized in Figure \ref{fig:F
 
 \subsection{Petrophysical characterization summary}
 
-\tabl{gmmtable}{Physical properties and elevation parameters for each rock unit. For the PK/VK-pipe unit, the values are reported without the rotation of the Gaussian distribution caused by the linear trend with depth. Notation and units: $\bar{x}$: mean of $x$; $\sigma_x$ standard-deviation of $x$; $\rho$: density contrast ($\text{g/cm}^3$); $z$: elevation (meter); $k$: effective magnetic susceptibility ($\log10$ SI); $\theta$: inclination ($^{\circ}$); $\phi$: declination($^{\circ}$).}{
-\begin{center}
-\scalebox{0.75}{
+\begin{table}
+\centering
+\label{tbl:gmmtable}
+\caption{Physical properties and elevation parameters for each rock unit. For the PK/VK-pipe unit, the values are reported without the rotation of the Gaussian distribution caused by the linear trend with depth. Notation and units: $\bar{x}$: mean of $x$; $\sigma_x$ standard-deviation of $x$; $\rho$: density contrast ($\text{g/cm}^3$); $z$: elevation (meter); $k$: effective magnetic susceptibility ($\log10$ SI); $\theta$: inclination ($^{\circ}$); $\phi$: declination($^{\circ}$).}
+% \scalebox{0.75}{
 %\rotatebox{90}{
-{\renewcommand{\arraystretch}{1.} %<- modify value to suit your needs
+% {\renewcommand{\arraystretch}{1.} %<- modify value to suit your needs
 \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|}
 \hline
 Rock unit & $\bar{\rho}$ & $\sigma_\rho$ & $\bar{z}$ & $\sigma_z$ & $\bar{k}$ & $\sigma_k$ & $\bar{\theta}$ & $\bar{\phi}$ & $\sigma_{\theta, \phi}$\\
@@ -362,10 +372,11 @@ HK & 0 & 0.1 & 290 & 180 & -1.3 & 0.33 & 53 & 22 & 10 \\
 \hline
 PK-minor & -0.3 & 0.1 & 360 & 10 & -3.1 & 0.24 & 83.8 & 19.5 & 10\\
 \hline
-\end{tabular}}
-}
-\end{center}
-}
+\end{tabular}
+%}
+%}
+%}
+\end{table}
 
 We have defined, in terms of density and magnetization, the characteristics of the background and main kimberlite units identified in the DO-$27$ pipe. Table \ref{tbl:gmmtable} summarizes the quantitative values used to define the GMMs for the various inversions we conduct. Information about a new unit, PK-minor, is also reported. This unit is used in our final inversion, and more details are given in the multi-physics PGI section.
 
@@ -435,7 +446,7 @@ The result of the inversion with petrophysical knowledge is shown in Figure \ref
 
 \begin{figure}
 \centering
-\includegraphics[width=\columnwidth]{Figure11.png}
+\includegraphics[width=\columnwidth]{/Figures/300dpi/Figure11.png}
 \caption{Combination of the individual petrophysically guided inversions. The "UNDEFINED" area corresponds to a volume where both high density and magnetic contrasts were found, corresponding to no known rock units signature.}
 \label{fig:Figure11.png}
 \end{figure}
